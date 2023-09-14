@@ -20,11 +20,10 @@ class ConvertApiView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             params_dict[param_name] = param_value
-        all_symbols = requests.get(consts.API_CURRENCIES_ENDPOINT).json()
         for symbol_param in consts.QUERY_PARAMS[:-1]:
             if (
                 params_dict[symbol_param].upper()
-                not in all_symbols[consts.CURRENCY_RESPONCE_SYMBOLS]
+                not in consts.ALL_CURRENCIES
             ):
                 return Response(
                     {
