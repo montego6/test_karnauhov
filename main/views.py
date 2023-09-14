@@ -19,10 +19,10 @@ class ConvertApiView(APIView):
         all_symbols = requests.get(consts.API_CURRENCIES_ENDPOINT).json()
         for symbol_param in consts.QUERY_PARAMS[:-1]:
             if params_dict[symbol_param].upper() not in all_symbols[consts.CURRENCY_RESPONCE_SYMBOLS]:
-                return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL:consts.CURRENCY_ERROR_DETAIL})
+                return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL:consts.CURRENCY_ERROR_DETAIL}, status=status.HTTP_400_BAD_REQUEST)
         request = requests.get(consts.API_ENDPOINT, params=params_dict)
         response = request.json()
         if response.get(consts.STATUS_SUCCESS):
-            return Response({consts.RESPONSE_RESULT: response.get(consts.RESPONSE_RESULT)})
+            return Response({consts.RESPONSE_RESULT: response.get(consts.RESPONSE_RESULT)}, status=status.HTTP_200_OK)
         else:
-            return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL: consts.API_ERROR_DETAIL})
+            return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL: consts.API_ERROR_DETAIL}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
