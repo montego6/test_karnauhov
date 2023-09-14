@@ -1,0 +1,98 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/rates/:
+    get:
+      operationId: listConvertApis
+      description: 'Api Endpoint for converting currencies'
+      parameters: 
+        - in: query
+          name: from
+          schema:
+           type: string
+          required: true
+        - in: query
+          name: to
+          schema:
+           type: string
+          required: true
+        - in: query
+          name: amount
+          schema:
+            type: number
+          required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/result'
+          description: 'Result for conversion of currencies'
+        '400':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/errorMissingParams'
+                  - $ref: '#/components/schemas/errorWrongCurrency'
+          description: 'Error with query params'
+        '503':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/errorInternal'
+                  - $ref: '#/components/schemas/errorTimeout'
+          description: 'Error with outer service'
+      tags:
+      - api
+      
+components:
+  schemas:
+    result:
+      type: object
+      properties:
+        result:
+          type: number
+    errorMissingParams:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['error']
+        detail:
+          type: string
+          enum: ['value for parameter %s should be provided']
+    errorWrongCurrency:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['error']
+        detail:
+          type: string
+          enum: ['you currency is not supported or misspelled']
+    errorInternal:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['error']
+        detail:
+          type: string
+          enum: ['some problem with outer api service']
+    errorTimeout:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['error']
+        detail:
+          type: string
+          enum: ['timelimit for outer service exceeded']
+        
+        
+        
+      
