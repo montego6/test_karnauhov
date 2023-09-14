@@ -3,5 +3,5 @@ from .views import ConvertApiView
 
 
 urlpatterns = [
-    path('', ConvertApiView.as_view()),
+    path('rates/', ConvertApiView.as_view(), name='api-convert'),
 ]

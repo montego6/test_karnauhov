@@ -20,7 +20,10 @@ class ConvertApiView(APIView):
         for symbol_param in consts.QUERY_PARAMS[:-1]:
             if params_dict[symbol_param].upper() not in all_symbols[consts.CURRENCY_RESPONCE_SYMBOLS]:
                 return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL:consts.CURRENCY_ERROR_DETAIL}, status=status.HTTP_400_BAD_REQUEST)
-        request = requests.get(consts.API_ENDPOINT, params=params_dict)
+        try:
+            request = requests.get(consts.API_ENDPOINT, params=params_dict, timeout=consts.API_TIMEOUT)
+        except requests.exceptions.Timeout:
+            return Response({consts.RESPONSE_STATUS: consts.STATUS_ERROR, consts.RESPONSE_DETAIL:consts.TIMEOUT_ERROR_DETAIL})
         response = request.json()
         if response.get(consts.STATUS_SUCCESS):
             return Response({consts.RESPONSE_RESULT: response.get(consts.RESPONSE_RESULT)}, status=status.HTTP_200_OK)
